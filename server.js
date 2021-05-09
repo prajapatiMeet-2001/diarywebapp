@@ -8,7 +8,7 @@ app.use(express.urlencoded({
   extended: true
 }));
 //STARTING SERVER & CONNECTING WITH MONGODB CLIENT
-app.listen(process.env.SERVER,()=>console.log('Server Started'))
+app.listen(process.env.PORT || 3000,()=>console.log('Server Started'))
 
 mongoose.connect(process.env.CONNECTION_STRING,{
     useNewUrlParser:true,
