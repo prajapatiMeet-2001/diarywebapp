@@ -1,14 +1,26 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var app = express();
+require('dotenv/config');
 app.use(express.static(__dirname + '/public'))
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
 }));
 //STARTING SERVER & CONNECTING WITH MONGODB CLIENT
-app.listen(3000,()=>console.log('Server Started'))
-mongoose.connect('mongodb://localhost:27017/diaryDB', {useNewUrlParser: true, useUnifiedTopology: true});
+app.listen(process.env.SERVER,()=>console.log('Server Started'))
+
+mongoose.connect(process.env.CONNECTION_STRING,{
+    useNewUrlParser:true,
+    useUnifiedTopology:true,
+    dbName:'diaryDB'
+}).then(()=>{
+    console.log('Connection Successful');
+}).catch((err)=>{
+    console.log(err);
+})
+
+//mongoose.connect('mongodb://localhost:27017/diaryDB', {useNewUrlParser: true, useUnifiedTopology: true});
 //DB CONNECTION
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
