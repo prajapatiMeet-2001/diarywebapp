@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <!-- Boostrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/3.6.6/firebase.js"></script>
+    <!-- AngularFire -->
+    <script src="https://cdn.firebase.com/libs/angularfire/2.3.0/angularfire.min.js"></script>
+    <script src="js/app.js"></script>
+    <title>Welcome </title>
+</head>
+<body ng-app='fbapp' style="padding: 16px;">
+    <div ng-controller='fbcntrl'>
+        <!-- NAVIGATION BAR -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#" ng-model='welcomemail'>{{welcomemail}}</a>
+            <!-- s -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+          
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" onclick="viewhide()"><button type="button" class="btn btn-outline-primary">Write Diary</button></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="writehide()"><button type="button" class="btn btn-outline-info">View Diary</button></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="showprofile()"><button type="button" class="btn btn-outline-warning">Profile</button></a>
+                </li>
+                <li>
+                    <a class="nav-link"><button type="button" class="btn btn-outline-danger" ng-click='signout()'>Sign Out</button></a>
+                </li>                    
+              </ul>
+              <div class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" ng-model='search' placeholder="Search in Diary" aria-label="Search">
+              </div>
+            </div>
+        </nav>
+        <!-- WRITE DIARY --><br>
+        <div id="writediv">
+            <div class="row">
+                <div class="col">
+                        <h3>{{welcomname}}, Write your Diary</h3><br>
+                        <div class="row">
+                            <div class="col" hidden>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" ng-model="diary._id" disabled>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <input type="date" class="form-control"
+                                    ng-model="diary.dDate" id="ddate" placeholder="Diary Date">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" ng-model="diary.title" placeholder="Diary Title">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <textarea class="form-control" ng-model="diary.body" rows="10" placeholder="Diary Body"maxlength="2100">
+                            </textarea>
+                        </div>
+                        <div class="form-group">
+                            <button id="btn-add" ng-click="addDiary(diary)" class="btn btn-primary">Add Diary</button>
+                            <button id="btn-edit" ng-click="updateDiary(diary)" class="btn btn-warning" disabled>Edit Diary</button>
+                        </div>
+                </div>
+            </div><br>
+        </div>
+        <div id="viewdiv" style="display: none;">
+            <div class="row">
+                <div class="col">
+                    <h5>{{welcomname}}'s Diary</h5><br>    
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <input type="date" class="form-control" ng-model="diarysearchdate" placeholder="Diary Date">
+                </div>
+                <div class="col">
+                    <button class="btn btn-primary" ng-click="findbydate(diarysearchdate)">Find Diary</button>
+                    <button class="btn btn-warning" ng-click="showall()">Show All</button>
+                </div>
+                <div class="col">
+                </div>
+                <div class="col"></div>
+            </div><br>
+            <div class="row">
+                <div ng-repeat='diary in diaries | filter:search'>
+                    <div class="col" style="padding:8px;">
+                        <p id="fbkey" hidden="" disabled style="display: none;">AIzaSyCvPluRUa7kZ3TaofLz8J7X430uyv7yNJQ</p>
+                        <div class="card" style="width: 26rem;height:60vh;">
+                            <div class="card-header">
+                                <h5>{{diary.title}}</h5>
+                                <p class="card-subtitle mb-2 text-muted">Last Edited at {{diary.created | date:'medium'}}</p>
+                            </div>
+                            <div class="card-body" style="overflow: auto;">
+                              <h6 class="card-title">{{diary.dDate | date:'fullDate'}}</h6>
+                              <p class="card-text">{{diary.body}}</p>
+                            </div>
+                            <div class="card-footer">
+                                <div class="btn-group" role="group" aria-label="Basic example">
+                                    <button type="button" class="btn btn-success" ng-click="editDiary(diary._id,diary)">&nbsp;Edit&nbsp; </button>&nbsp;
+                                    <button type="button" class="btn btn-danger" ng-click="deleteDiary(diary._id)">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="profilediv" style="display: none;">
+            <div class="card login-form" style="padding: 32px;">
+                <div class="card-body">
+                    <h3 class="card-title text-center"><b>Profile</b></h3><br>
+                    <div class="card-text">
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" class="form-control" ng-model="nameP">
+                            </div>
+                            <div class="form-group">
+                                <label>Email address</label>
+                                <input type="email" class="form-control" ng-model="emailP" readonly="">
+                            </div>
+                            <div class="form-group">
+                                <button ng-click="editprofile(nameP,emailP)" class="btn btn-primary">Edit Profile</button>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
